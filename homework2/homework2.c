@@ -1,3 +1,10 @@
+/*********************************************/
+/**    OS Lab homeworks 2018 repository     **/
+/**         UNICT - Lorenzo Catania         **/
+/**      Parts of this code may be from     **/
+/**   Prof. Mario Di Raimondo's solutions   **/
+/*********************************************/
+
 /*
     Homework n.2
 
