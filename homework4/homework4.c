@@ -23,6 +23,40 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <dirent.h>
+
+int copy_reg_file(char* path, char* destPath, size_t fsize) {
+    printf("Copying file %s...\n", path);
+    int rfd = open(path, O_RDONLY);
+    int wfd = creat(destPath, S_IWUSR | S_IRUSR | S_IXUSR);
+
+    char fileContent[fsize];
+    if(read(rfd, fileContent, fsize) > 0) {
+        write(wfd, fileContent, fsize);
+    } else {
+        return -1;
+    }
+
+    return 0;
+}
+
+int copy_directory(char* path, char* destPath) {
+    DIR* dirstream = opendir(path);
+    struct dirent* direntry = NULL;
+    struct stat fileStats = { 0 };
+    char filePath[100];
+
+    while((direntry = readdir(dirstream)) != NULL) {
+        sprintf(filePath, "%s%s", path, direntry->d_name);
+        if (stat(filePath, &fileStats) == -1) {
+            fprintf(stderr, "Error reading directory entry %s\n", filePath);
+        }
+
+        copy_reg_file(filePath, destPath, fileStats.st_size);
+    }
+
+    return 0;
+}
 
 int main(int argc, char** argv) {
     if (argc < 3) {
@@ -43,22 +77,17 @@ int main(int argc, char** argv) {
     const int lastFileIndex = argc - 2;
     char filePath[100];
     int rfd, wfd;
+
     for(int i = 1; i <= lastFileIndex; ++i) {
         sprintf(filePath, "%s%s", directory, argv[i]);
 
         if(lstat(argv[i], &stats) != -1) { 
             if(S_ISREG(stats.st_mode)) {
-                rfd = open(argv[i], O_RDONLY);
-                wfd = creat(filePath, S_IWUSR | S_IRUSR | S_IXUSR);
-
-                char fileContent[stats.st_size];
-                if(read(rfd, fileContent, stats.st_size) > 0) {
-                    write(wfd, fileContent, stats.st_size);
-                } else {
+                if(copy_reg_file(argv[i], filePath, stats.st_size) != 0) {
                     fprintf(stderr, "Unable to read content of file: %s\n", argv[i]);
                 }
             } else if(S_ISDIR(stats.st_mode)) {
-
+                copy_directory(argv[i], filePath);
             }
         } else {
             fprintf(stderr, "Unable to copy file: %s\n", argv[i]);
