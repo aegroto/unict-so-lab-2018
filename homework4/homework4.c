@@ -6,13 +6,16 @@
 /*****************************************************/
 
 /*
-    Homework n.1
+    Homework n.4
 
-    Scrivere un programma in linguaggio C che permetta di copiare un numero
-    arbitrario di file regolari su una directory di destinazione preesistente.
+    Estendere l'esercizio 'homework n.1' affinche' operi correttamente
+    anche nel caso in cui tra le sorgenti e' indicata una directory, copiandone
+    il contenuto ricorsivamente. Eventuali link simbolici incontrati dovranno
+    essere replicati come tali (dovrà essere creato un link e si dovranno
+    preservare tutti permessi di accesso originali dei file e directory).
 
-    Il programma dovra' accettare una sintassi del tipo:
-     $ homework-1 file1.txt path/file2.txt "nome con spazi.pdf" directory-destinazione
+    Una ipotetica invocazione potrebbe essere la seguente:
+     $ homework-4 directory-di-esempio file-semplice.txt path/altra-dir/ "nome con spazi.pdf" directory-destinazione
 */
 
 #include <stdio.h>
@@ -43,16 +46,19 @@ int main(int argc, char** argv) {
     for(int i = 1; i <= lastFileIndex; ++i) {
         sprintf(filePath, "%s%s", directory, argv[i]);
 
-        if(lstat(argv[i], &stats) != -1 && 
-            !S_ISDIR(stats.st_mode) && S_ISREG(stats.st_mode)) {
-            rfd = open(argv[i], O_RDONLY);
-            wfd = creat(filePath, S_IWUSR | S_IRUSR | S_IXUSR);
+        if(lstat(argv[i], &stats) != -1) { 
+            if(S_ISREG(stats.st_mode)) {
+                rfd = open(argv[i], O_RDONLY);
+                wfd = creat(filePath, S_IWUSR | S_IRUSR | S_IXUSR);
 
-            char fileContent[stats.st_size];
-            if(read(rfd, fileContent, stats.st_size) > 0) {
-                write(wfd, fileContent, stats.st_size);
-            } else {
-                fprintf(stderr, "Unable to read content of file: %s\n", argv[i]);
+                char fileContent[stats.st_size];
+                if(read(rfd, fileContent, stats.st_size) > 0) {
+                    write(wfd, fileContent, stats.st_size);
+                } else {
+                    fprintf(stderr, "Unable to read content of file: %s\n", argv[i]);
+                }
+            } else if(S_ISDIR(stats.st_mode)) {
+
             }
         } else {
             fprintf(stderr, "Unable to copy file: %s\n", argv[i]);

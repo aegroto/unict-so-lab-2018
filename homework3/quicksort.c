@@ -1,9 +1,9 @@
-/*********************************************/
-/**    OS Lab homeworks 2018 repository     **/
-/**         UNICT - Lorenzo Catania         **/
-/**      Parts of this code may be from     **/
-/**   Prof. Mario Di Raimondo's solutions   **/
-/*********************************************/
+/*****************************************************/
+/**        OS Lab homeworks 2018 repository         **/
+/**           UNICT - Lorenzo Catania               **/
+/**      Parts of this code may be taken from       **/
+/**       Prof. Mario Di Raimondo's solutions       **/
+/*****************************************************/
 
 char *search_pivot(char *map, int i, int j, int size) {
     int k;
