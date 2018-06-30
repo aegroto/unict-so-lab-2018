@@ -1,4 +1,9 @@
-char *swap_buffer; // riferimento ad buffer di scambio globale
+/*****************************************************/
+/**        OS Lab homeworks 2018 repository         **/
+/**           UNICT - Lorenzo Catania               **/
+/**      Parts of this code may be taken from       **/
+/**       Prof. Mario Di Raimondo's solutions       **/
+/*****************************************************/
 
 char *search_pivot(char *map, int i, int j, int size) {
     int k;
@@ -13,7 +18,7 @@ char *search_pivot(char *map, int i, int j, int size) {
 }
 
 // partiziona map[p]...map[r] usando il pivot
-int partition(char *map, int p, int r, char *pivot, int size) {
+int partition(char *map, int p, int r, char *pivot, int size, char* swap_buffer) {
     int i, j;
 
     i = p;
@@ -33,15 +38,15 @@ int partition(char *map, int p, int r, char *pivot, int size) {
 }
 
 // quicksort in versione ricorsiva
-void quicksort(char *map, int p, int r, int size) {
+void quicksort(char *map, int p, int r, int size, char* swap_buffer) {
     int q;
     char *pivot;
 
     pivot = search_pivot(map, p, r, size);
     if ( (p < r) && (pivot != NULL) ) {
-        q = partition(map, p, r, pivot, size);
-        quicksort(map, p, q, size);
-        quicksort(map, q+1, r, size);
+        q = partition(map, p, r, pivot, size, swap_buffer);
+        quicksort(map, p, q, size, swap_buffer);
+        quicksort(map, q+1, r, size, swap_buffer);
     }
     if (pivot) free(pivot);
 }

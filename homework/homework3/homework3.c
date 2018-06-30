@@ -1,3 +1,10 @@
+/*****************************************************/
+/**        OS Lab homeworks 2018 repository         **/
+/**           UNICT - Lorenzo Catania               **/
+/**      Parts of this code may be taken from       **/
+/**       Prof. Mario Di Raimondo's solutions       **/
+/*****************************************************/
+
 /*
     Homework n.3
 
@@ -80,8 +87,8 @@ int main(int argc, char** argv) {
 
     size_t recordsize = atoi(argv[1]);
 
-    swap_buffer = malloc(recordsize);
-    quicksort(filep, 0, (stats.st_size / recordsize) - 1, recordsize);
+    char* swap_buffer = malloc(recordsize);
+    quicksort(filep, 0, (stats.st_size / recordsize) - 1, recordsize, swap_buffer);
     free(swap_buffer);
 
     if(munmap(filep, stats.st_size) == -1) {
